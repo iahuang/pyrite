@@ -1,6 +1,6 @@
 from typing import Any, Optional
 from termcolor import colored
-from pyrite.errors import CompileError, SemanticError
+from pyrite.errors import CompileError, SemanticError, UserError
 from pyrite.module import Module
 
 
@@ -22,7 +22,7 @@ class CompileLogger:
             for line in text.split("\n")
         )
 
-    def log_error(self, module: Module, error: CompileError) -> None:
+    def log_compile_error(self, module: Module, error: CompileError) -> None:
         print(self._colored(
             'Error in module {}:'.format(
                 self._colored(module.get_source_path(), color="cyan"),
@@ -46,3 +46,9 @@ class CompileLogger:
                     error.message
                 )
             ), color="red"))
+    
+    def log_user_error(self, err: UserError):
+        print(self._colored(
+            "error: "+err.message,
+            color="red"
+        ))

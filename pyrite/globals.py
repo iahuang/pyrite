@@ -8,6 +8,7 @@ class CompilerOptions:
     stdlib_include: list[str]
     cwd: str
     enable_color: bool
+    clang_command: str
 
 
 class Globals:

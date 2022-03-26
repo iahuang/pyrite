@@ -188,7 +188,7 @@ class ModuleSource:
 
     def _resolve_stdlib_file_path(self, name: str) -> str:
         opts = Globals.get_compiler_options()
-        return Path(opts.stdlib_path, name, extension=".py").as_posix()
+        return Path(opts.stdlib_path, name + ".py").as_posix()
 
     def get_source_path(self) -> str:
         """
@@ -306,12 +306,13 @@ class Module:
             Type("None", size_bytes=0, built_in=True)
         ]
 
-        # load _internal module
+        # load _internal module, if necessary
+        
+        if not self.is_internal_module():
+            internal = load_internal_module()
 
-        internal = load_internal_module()
-
-        for type in internal.get_types():
-            self._register_type(type)
+            for type in internal.get_types():
+                self._register_type(type)
 
         for type in builtin:
             self._register_type(type)

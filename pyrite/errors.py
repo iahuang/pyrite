@@ -8,7 +8,7 @@ class CompileError(Exception):
     message: str
 
     def __init__(self, message: str):
-        super().__init__()
+        super().__init__(message)
 
         self.message = message
 
@@ -29,3 +29,9 @@ class UserError(Exception):
     """
     Base class for errors that are not related to code (e.g. input file is missing)
     """
+
+    message: str
+    def __init__(self, message: str):
+        super().__init__(message)
+
+        self.message = message

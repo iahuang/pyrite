@@ -12,7 +12,7 @@ class LLVMInterface:
         self._clang_path = self._get_clang_path()
 
     def _get_clang_path(self) -> str:
-        clang_path = shutil.which("clang")
+        clang_path = shutil.which(Globals.get_compiler_options().clang_command)
 
         if not clang_path:
             raise UserError(

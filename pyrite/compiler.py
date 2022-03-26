@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Optional
 from pyrite.console import CompileLogger
-from pyrite.errors import CompileError
+from pyrite.errors import CompileError, UserError
 from pyrite.globals import CompilerOptions, Globals
 from pyrite.llvm import LLVMInterface
 from pyrite.module import Module, ModuleSource, ModuleType
@@ -47,7 +47,9 @@ class Compiler:
             try:
                 module.compile()
             except CompileError as err:
-                logger.log_error(module, err)
+                logger.log_compile_error(module, err)
+            except UserError as err:
+                logger.log_user_error(err)
     
     def get_global_options(self) -> CompilerOptions:
         return Globals.get_compiler_options()
