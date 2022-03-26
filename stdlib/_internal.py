@@ -88,8 +88,8 @@ class __str(__Struct):
 
             c = _get_byte(c_str)
         
-        self.__ptr = _malloc(length - 1)
-        self.__length = length - 1
+        self.__ptr = _malloc(length)
+        self.__length = length
     
     def __len__(self) -> int:
         return self.__length
