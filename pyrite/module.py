@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 from enum import Enum
 import os
 from pathlib import Path
@@ -254,6 +255,7 @@ class ModuleSource:
 
         return self.load_source_string().split("\n")[lineno - 1]
 
+
 def load_internal_module() -> Module:
     """
     stdlib/_internal defines a collection of types and methods that are meant to be
@@ -266,6 +268,13 @@ def load_internal_module() -> Module:
     internal = Module(ModuleSource(ModuleType.STDLIB, "_internal"))
     internal.compile()
     return internal
+
+
+@dataclass
+class ModulePragma:
+    private_symbols: list[str]
+    use_extern: bool
+
 
 class Module:
     _module_type: ModuleType
@@ -370,7 +379,7 @@ class Module:
             pass
 
         return function
-    
+
     def _resolve_pragmas(self) -> None:
         """
         Some modules may have top-level constants prefixed with "__PRAGMA", as a way to provide
@@ -404,7 +413,7 @@ class Module:
 
     def get_types(self) -> list[Type]:
         return list(self._types.values())
-    
+
     def assert_ast_loaded(self) -> ast.Module:
         """
         The actual source code contents of a module are not actually read until
@@ -414,5 +423,15 @@ class Module:
 
         if self._root_node:
             return self._root_node
-        
+
         raise ValueError()
+
+    def is_internal_module(self) -> bool:
+        """
+        The module stdlib/_internal has special properties, as it interacts directly with
+        LLVM and libc, and therefore has additional methods and types.
+
+        Return True if this module is stdlib/_internal
+        """
+
+        return self._source.type == ModuleType.STDLIB and self._source.get_qualifier() == "_internal"
